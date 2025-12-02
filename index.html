@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FIT File Comparison Tool</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>FIT File Comparison</h1>
+
+    <section class="inputs">
+      <div>
+        <label>Device A FIT:</label>
+        <input id="fileA" type="file" accept=".fit" />
+      </div>
+      <div>
+        <label>Device B FIT:</label>
+        <input id="fileB" type="file" accept=".fit" />
+      </div>
+      <div>
+        <label>Metric:</label>
+        <select id="metricSelect">
+          <!-- populated dynamically -->
+        </select>
+      </div>
+      <button id="analyzeBtn">Analyze</button>
+      <div id="error" class="error"></div>
+    </section>
+
+    <section class="chart">
+      <canvas id="metricChart"></canvas>
+    </section>
+
+    <section class="summary">
+      <h2>Summary</h2>
+      <div id="summaryTable"></div>
+      <div id="comparisonNote"></div>
+    </section>
+  </div>
+
+  <script src="fit-entry.js"></script>  <!-- parser -->
+  <script src="analyzer.js"></script>   <!-- your logic -->
+</body>
+</html>
