@@ -1,0 +1,313 @@
+/* Global */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: #020617;
+  color: #e5e7eb;
+}
+
+.page {
+  min-height: 100vh;
+}
+
+/* Top bar */
+
+.topbar {
+  max-width: 1120px;
+  margin: 20px auto 0;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.brand-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #22c55e, #0ea5e9);
+}
+
+/* Main wrapper */
+
+.wrapper {
+  max-width: 1120px;
+  margin: 16px auto 40px;
+  padding: 0 16px 32px;
+}
+
+/* Cards */
+
+.card {
+  background: #020617;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 16px 18px 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  margin-bottom: 18px;
+}
+
+.card-upload {
+  margin-top: 6px;
+}
+
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.subtext {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+/* Upload inputs */
+
+.inputs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 18px;
+}
+
+.input-block label {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.input-block input[type="file"] {
+  width: 100%;
+  font-size: 0.85rem;
+}
+
+.input-help {
+  margin: 4px 0 0;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.actions-row {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #22c55e, #0ea5e9);
+  color: #020617;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+.error {
+  color: #f97373;
+  font-size: 0.8rem;
+}
+
+.global-hint {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+/* Device sources */
+
+.device-sources {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.device-col {
+  background: #020617;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 10px 12px;
+}
+
+.device-col h3 {
+  font-size: 0.9rem;
+  margin: 0 0 6px;
+}
+
+.device-empty {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.device-metric-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.device-metric-list li + li {
+  margin-top: 2px;
+}
+
+.metric-ok {
+  color: #22c55e;
+  font-weight: 500;
+}
+
+.metric-missing {
+  color: #64748b;
+}
+
+/* Charts */
+
+.chart-card {
+  padding-bottom: 14px;
+}
+
+.chart-card canvas {
+  width: 100%;
+  max-height: 280px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.reset-zoom-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.65);
+  background: transparent;
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.reset-zoom-btn:hover {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.chart-hint {
+  margin: 6px 0 8px;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+/* Summary */
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 0.8rem;
+}
+
+.summary-table th,
+.summary-table td {
+  border: 1px solid rgba(55, 65, 81, 0.85);
+  padding: 4px 6px;
+  text-align: center;
+}
+
+.summary-table th {
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.comparison-note {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #e5e7eb;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .inputs-grid,
+  .device-sources {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chart-card canvas {
+    max-height: 240px;
+  }
+}
+/* Route map */
+#routeMap {
+  width: 100%;
+  height: 320px;
+  border-radius: 10px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+/* Buttons for this tool (if not already defined) */
+.btn-primary {
+  background: linear-gradient(135deg, #22c55e, #0ea5e9);
+  color: #020617;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-secondary {
+  background: transparent;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  color: #e5e7eb;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: rgba(15, 23, 42, 0.8);
+}
