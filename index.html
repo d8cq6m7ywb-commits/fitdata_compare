@@ -2,46 +2,137 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>FIT File Comparison Tool</title>
+  <title>FIT File Comparison | Yousuli</title>
+
   <link rel="stylesheet" href="style.css" />
-  <!-- Chart.js from CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Chart.js (UMD build) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
   <div class="wrapper">
-    <h1>FIT File Comparison</h1>
+    <!-- Header -->
+    <header class="page-header">
+      <div>
+        <h1>FIT File Comparison</h1>
+        <p class="subtitle">
+          Drop up to three FIT files from different devices to compare power, heart rate, cadence and speed on the same ride.
+        </p>
+      </div>
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span class="brand-name">YOUSULI LAB</span>
+      </div>
+    </header>
 
-    <section class="inputs">
-      <div>
-        <label>Device A FIT:</label>
-        <input id="fileA" type="file" accept=".fit" />
+    <!-- Upload card -->
+    <section class="card">
+      <h2 class="section-title">Upload FIT files</h2>
+      <div class="inputs-grid">
+        <div class="input-block">
+          <label for="fileA">Device A FIT</label>
+          <input id="fileA" type="file" accept=".fit" />
+          <p class="hint">Reference device (baseline).</p>
+        </div>
+
+        <div class="input-block">
+          <label for="fileB">Device B FIT</label>
+          <input id="fileB" type="file" accept=".fit" />
+          <p class="hint">Comparison vs Device A.</p>
+        </div>
+
+        <div class="input-block">
+          <label for="fileC">Device C FIT (optional)</label>
+          <input id="fileC" type="file" accept=".fit" />
+          <p class="hint">Optional third device.</p>
+        </div>
       </div>
-      <div>
-        <label>Device B FIT:</label>
-        <input id="fileB" type="file" accept=".fit" />
+
+      <div class="inputs-actions">
+        <button id="analyzeBtn" class="primary-btn">Analyze files</button>
+        <button id="resetToolBtn" class="reset-zoom-btn">Reset tool</button>
+        <div id="error" class="error"></div>
       </div>
-      <div>
-        <label>Metric:</label>
-        <select id="metricSelect">
-          <!-- populated dynamically -->
-        </select>
-      </div>
-      <button id="analyzeBtn">Analyze</button>
-      <div id="error" class="error"></div>
+
+      <p class="global-hint">
+        Drag horizontally on a chart to zoom into a time range.
+        Double-click or use the <strong>Reset zoom</strong> button under each chart to go back.
+      </p>
     </section>
 
-    <section class="chart">
-      <canvas id="metricChart"></canvas>
+    <!-- Device sources card -->
+    <section class="card">
+      <h2 class="section-title">Detected data sources</h2>
+      <p class="hint">
+        Quick overview of which metrics are present in each file. Device A is treated as the reference.
+      </p>
+      <div id="deviceSources" class="device-sources"></div>
     </section>
 
-    <section class="summary">
-      <h2>Summary</h2>
+    <!-- Charts -->
+    <section class="charts">
+      <!-- Power -->
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Power</h2>
+          <button class="reset-zoom-btn" data-reset="power">Reset zoom</button>
+        </div>
+        <p class="chart-hint">Drag horizontally to zoom. Double-click to reset.</p>
+        <canvas id="powerChart"></canvas>
+      </section>
+
+      <!-- Heart rate -->
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Heart rate</h2>
+          <button class="reset-zoom-btn" data-reset="hr">Reset zoom</button>
+        </div>
+        <p class="chart-hint">Drag horizontally to zoom. Double-click to reset.</p>
+        <canvas id="hrChart"></canvas>
+      </section>
+
+      <!-- Cadence -->
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Cadence</h2>
+          <button class="reset-zoom-btn" data-reset="cadence">Reset zoom</button>
+        </div>
+        <p class="chart-hint">Drag horizontally to zoom. Double-click to reset.</p>
+        <canvas id="cadenceChart"></canvas>
+      </section>
+
+      <!-- Speed -->
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Speed</h2>
+          <button class="reset-zoom-btn" data-reset="speed">Reset zoom</button>
+        </div>
+        <p class="chart-hint">Drag horizontally to zoom. Double-click to reset.</p>
+        <canvas id="speedChart"></canvas>
+      </section>
+
+      <!-- Power duration curve -->
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Power duration curve</h2>
+          <button class="reset-zoom-btn" data-reset="pdc">Reset zoom</button>
+        </div>
+        <p class="chart-hint">Mean max power for standard durations.</p>
+        <canvas id="pdcChart"></canvas>
+      </section>
+    </section>
+
+    <!-- Summary -->
+    <section class="card">
+      <h2 class="section-title">Summary (by metric)</h2>
       <div id="summaryTable"></div>
-      <div id="comparisonNote"></div>
+      <div id="comparisonNote" class="comparison-note"></div>
     </section>
   </div>
 
-  <script src="fit-entry.js"></script>  <!-- parser -->
-  <script src="analyzer.js"></script>   <!-- your logic -->
+  <!-- FIT parser bundle (provides window.FitEntry.parseFitToTimeSeries) -->
+  <script src="fit-entry.js"></script>
+  <!-- Analyzer / charts / UI wiring -->
+  <script src="analyzer.min.js"></script>
 </body>
 </html>
