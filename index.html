@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FIT File Sensor Comparison | Yousuli Performance Hub</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- Header -->
+    <header class="page-header">
+      <div>
+        <h1>Sensor Comparison Tool</h1>
+        <p class="subtitle">Compare up to three FIT files from the same activity to diagnose sensor disagreement — offsets, drift, dropouts, smoothing.</p>
+      </div>
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span class="brand-name">YOUSULI LAB</span>
+      </div>
+    </header>
+
+    <!-- ─── UPLOAD CARD ─── -->
+    <section class="card">
+      <h2 class="section-title">Upload FIT Files</h2>
+      <p class="hint">Device A is the reference baseline. Label your devices for clearer charts.</p>
+
+      <div class="inputs-grid">
+        <div class="input-block">
+          <label for="labelA">Device A label</label>
+          <input id="labelA" type="text" placeholder="e.g. Garmin Rally" />
+          <label for="fileA" class="file-label">FIT file (reference)</label>
+          <input id="fileA" type="file" accept=".fit" />
+          <span class="file-size"></span>
+        </div>
+
+        <div class="input-block">
+          <label for="labelB">Device B label</label>
+          <input id="labelB" type="text" placeholder="e.g. Wahoo Kickr" />
+          <label for="fileB" class="file-label">FIT file</label>
+          <input id="fileB" type="file" accept=".fit" />
+          <span class="file-size"></span>
+        </div>
+
+        <div class="input-block">
+          <label for="labelC">Device C label (optional)</label>
+          <input id="labelC" type="text" placeholder="e.g. Stages LR" />
+          <label for="fileC" class="file-label">FIT file (optional)</label>
+          <input id="fileC" type="file" accept=".fit" />
+          <span class="file-size"></span>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button id="analyzeBtn" class="btn-primary">Analyze Files</button>
+        <button id="resetBtn" class="btn-secondary">Reset</button>
+        <div id="error" class="error"></div>
+      </div>
+
+      <p class="global-hint">Drag horizontally on any chart to zoom — all charts zoom together. Double-click to reset.</p>
+    </section>
+
+    <!-- ─── RESULTS (hidden until analysis) ─── -->
+    <div id="resultsSection">
+
+      <!-- ─── CHART CONTROLS BAR ─── -->
+      <section class="card controls-bar">
+        <div class="controls-row">
+          <div class="control-group">
+            <label for="smoothingSelect">Smoothing:</label>
+            <select id="smoothingSelect">
+              <option value="1" selected>Raw (1s)</option>
+              <option value="5">5s avg</option>
+              <option value="10">10s avg</option>
+              <option value="30">30s avg</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <button id="paceToggle" class="btn-secondary btn-small">Show pace</button>
+          </div>
+          <div class="control-group">
+            <button id="exportCsvBtn" class="btn-secondary btn-small">Export CSV</button>
+          </div>
+          <div class="control-group">
+            <button class="btn-secondary btn-small" data-reset="all">Reset all zoom</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── ALIGNMENT CONTROLS ─── -->
+      <section class="card">
+        <h2 class="section-title">Time Alignment</h2>
+        <p class="hint">Auto-alignment uses cross-correlation on the strongest shared signal. Adjust manually if needed.</p>
+
+        <div id="alignInfo" class="align-info"></div>
+
+        <div class="offset-controls">
+          <div class="offset-row">
+            <label>Device B offset:</label>
+            <input id="offsetB" type="range" min="-120" max="120" value="0" step="1" />
+            <span id="offsetBValue" class="offset-value">+0s</span>
+          </div>
+          <div class="offset-row">
+            <label>Device C offset:</label>
+            <input id="offsetC" type="range" min="-120" max="120" value="0" step="1" />
+            <span id="offsetCValue" class="offset-value">+0s</span>
+          </div>
+          <div class="offset-actions">
+            <button id="autoAlignBtn" class="btn-secondary">Auto-align</button>
+            <button id="reAlignBtn" class="btn-primary btn-small">Re-analyze with offsets</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── DEVICE SOURCES ─── -->
+      <section class="card">
+        <h2 class="section-title">Detected Data Sources</h2>
+        <div id="deviceSources" class="device-sources"></div>
+      </section>
+
+      <!-- ─── DIAGNOSIS ─── -->
+      <section class="card">
+        <h2 class="section-title">Sensor Diagnosis</h2>
+        <p class="hint">Automated assessment of disagreement patterns between devices.</p>
+        <div id="diagnosisPanel" class="diagnosis-panel"></div>
+      </section>
+
+      <!-- ─── GPS MAP ─── -->
+      <section class="card">
+        <h2 class="section-title">GPS Tracks</h2>
+        <p class="hint">Overlaid GPS traces. Misalignment here usually indicates GPS quality differences.</p>
+        <div id="routeMap"></div>
+      </section>
+
+      <!-- ─── POWER ─── -->
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Power</h2>
+          <span class="chart-label-hint">synced zoom</span>
+        </div>
+        <div class="chart-wrap"><canvas id="powerChart"></canvas></div>
+      </section>
+
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Power Difference</h2>
+          <span class="chart-label-hint">synced zoom</span>
+        </div>
+        <p class="chart-hint">Positive = other device reads higher than reference.</p>
+        <div class="chart-wrap"><canvas id="powerDiffChart"></canvas></div>
+      </section>
+
+      <!-- ─── HEART RATE ─── -->
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Heart Rate</h2>
+          <span class="chart-label-hint">synced zoom</span>
+        </div>
+        <div class="chart-wrap"><canvas id="hrChart"></canvas></div>
+      </section>
+
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Heart Rate Difference</h2>
+          <span class="chart-label-hint">synced zoom</span>
+        </div>
+        <div class="chart-wrap"><canvas id="hrDiffChart"></canvas></div>
+      </section>
+
+      <!-- ─── CADENCE ─── -->
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Cadence</h2>
+          <span class="chart-label-hint">synced zoom</span>
+        </div>
+        <div class="chart-wrap"><canvas id="cadenceChart"></canvas></div>
+      </section>
+
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Cadence Difference</h2>
+          <span class="chart-label-hint">synced zoom</span>
+        </div>
+        <div class="chart-wrap"><canvas id="cadenceDiffChart"></canvas></div>
+      </section>
+
+      <!-- ─── SPEED ─── -->
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Speed</h2>
+          <span class="chart-label-hint">synced zoom</span>
+        </div>
+        <div class="chart-wrap"><canvas id="speedChart"></canvas></div>
+      </section>
+
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Speed Difference</h2>
+          <span class="chart-label-hint">synced zoom</span>
+        </div>
+        <div class="chart-wrap"><canvas id="speedDiffChart"></canvas></div>
+      </section>
+
+      <!-- ─── ELEVATION ─── -->
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Elevation</h2>
+          <span class="chart-label-hint">synced zoom</span>
+        </div>
+        <div class="chart-wrap"><canvas id="elevChart"></canvas></div>
+      </section>
+
+      <!-- ─── POWER DURATION CURVE ─── -->
+      <section class="card chart-card">
+        <div class="chart-header">
+          <h2>Power Duration Curve</h2>
+          <button class="btn-secondary btn-small" data-reset="pdc">Reset zoom</button>
+        </div>
+        <p class="chart-hint">Mean max power across standard durations. Shows how device choice affects peak power claims.</p>
+        <div class="chart-wrap"><canvas id="pdcChart"></canvas></div>
+      </section>
+
+      <!-- ─── SUMMARY TABLE ─── -->
+      <section class="card">
+        <h2 class="section-title">Statistical Summary</h2>
+        <div id="summaryTable"></div>
+      </section>
+
+    </div><!-- /resultsSection -->
+
+  </div><!-- /wrapper -->
+
+  <!-- FIT parser bundle -->
+  <script src="fit-entry.js"></script>
+  <!-- Main app -->
+  <script src="analyzer.js"></script>
+</body>
+</html>
